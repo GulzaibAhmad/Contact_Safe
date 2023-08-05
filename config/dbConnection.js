@@ -1,9 +1,9 @@
-const { Client } = require("pg");
+const { Client } = require('pg');
 
-const connnectionString =process.env.CONNECTION_STRING
+const connectionString = process.env.CONNECTION_STRING;
 
 const client = new Client({
-  connectionString: connnectionString,
+  connectionString: connectionString,
 });
 
 module.exports = client;
