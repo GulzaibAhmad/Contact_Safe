@@ -1,14 +1,14 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const {getAllContacts} = require('../controllers/controller')
-const {createContact} = require('../controllers/controller')
-const {getContactById} = require('../controllers/controller')
-const {updateContact} = require('../controllers/controller')
-const {deleteContact} = require('../controllers/controller')
+const controller = require('../controllers/controller');
 
+router.route('/')
+  .get(controller.getAllContacts)
+  .post(controller.createContact);
 
-router.route('/').get(getAllContacts).post(createContact);
-
-router.route('/:id').get(getContactById).put(updateContact).delete(deleteContact);
+router.route('/:id')
+  .get(controller.getContactById)
+  .put(controller.updateContact)
+  .delete(controller.deleteContact);
 
 module.exports = router;
