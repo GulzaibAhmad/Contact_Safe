@@ -11,10 +11,13 @@
   "author": "Gulzaib Ahmad",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-async-handler": "^1.2.0",
-    "pg": "^8.11.2"
+    "jsonwebtoken": "^9.0.1",
+    "pg": "^8.11.2",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
