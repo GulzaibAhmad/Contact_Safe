@@ -52,7 +52,7 @@ const loginUser = async (req, res) => {
           }
         },
         process.env.ACCESS_TOKEN_SECRET,
-        {expiresIn: "1m"}
+        {expiresIn: "30m"}
       )
       res.status(200).json( {accessToken} )
     }else{
@@ -66,9 +66,7 @@ const loginUser = async (req, res) => {
 
 const currentUser = async (req, res) => {
   try {
-    // Implement your current user logic here
-    // Fetch user details from authentication data, database, etc.
-    res.json({ message: "Current user details." });
+    res.json(req.user);
   } catch (error) {
     res
       .status(500)

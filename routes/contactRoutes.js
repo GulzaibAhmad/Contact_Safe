@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/contactController');
+const validateToken = require('../middleware/validateTokenHandler');
+
+router.use(validateToken); // Apply validateToken middleware to protect routes
 
 router.route('/')
   .get(controller.getAllContacts)
