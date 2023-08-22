@@ -8,8 +8,16 @@ const App = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!username || !email || !password) {
+      alert("All fields must be filled!");
+      return;
+    }
+
     setUsername("");
     setEmail("");
     setPassword("");
