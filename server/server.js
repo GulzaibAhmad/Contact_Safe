@@ -7,19 +7,10 @@ const app = express();
 
 const port = process.env.PORT || 8081;
 
-const corsConfig = {
-    origin: 'https://my-contacts-frontend-six.vercel.app', // Replace with your frontend URL
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE']
-}
-
 client.connect();
 app.use(express.json());
 
-app.use(cors(corsConfig));
-
-// Use a middleware to handle preflight (OPTIONS) requests
-app.options('', cors(corsConfig));
+app.use(cors());
 
 app.use('/api/contacts', require('./routes/contactRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
