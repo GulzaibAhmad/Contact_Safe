@@ -10,7 +10,7 @@ const port = process.env.PORT || 8081;
 client.connect();
 app.use(express.json());
 
-app.use(cors());
+app.use(cors("*"));
 
 app.use('/api/contacts', require('./routes/contactRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
