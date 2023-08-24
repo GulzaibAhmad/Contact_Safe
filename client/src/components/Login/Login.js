@@ -11,7 +11,7 @@ const Login = () => {
     e.preventDefault();
     
     try {
-      const response = await fetch("https://my-contacts-frontend-six.vercel.app/api/users/login", {
+      const response = await fetch("https://my-contacts-server-beryl.vercel.app/api/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
