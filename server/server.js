@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(cors(corsConfig));
 
 // Use a middleware to handle preflight (OPTIONS) requests
-app.options('*', cors(corsConfig));
+app.options('', cors(corsConfig));
 
 app.use('/api/contacts', require('./routes/contactRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
