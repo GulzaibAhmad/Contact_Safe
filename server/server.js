@@ -5,13 +5,19 @@ const client = require("./config/dbConnection");
 const cors = require('cors');
 const app = express();
 
-// hello
-
 const port = process.env.PORT || 8081;
+
+const corsConfig = {
+    origin: '',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
+}
 
 client.connect();
 app.use(express.json());
-app.use(cors()); 
+
+app.use(cors(corsConfig))
+app.options("", cors(corsConfig))
 
 
 app.use('/api/contacts', require('./routes/contactRoutes'));
