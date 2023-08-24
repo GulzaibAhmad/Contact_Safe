@@ -8,7 +8,7 @@ const app = express();
 const port = process.env.PORT || 8081;
 
 const corsConfig = {
-    origin: '',
+    origin: 'https://my-contacts-frontend-six.vercel.app', // Replace with your frontend URL
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE']
 }
