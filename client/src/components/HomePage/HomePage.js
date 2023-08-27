@@ -2,44 +2,44 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
-
   const navigate = useNavigate();
 
   const [user, setUser] = useState(null);
   const [contacts, setContacts] = useState([]);
+  const [newContact, setNewContact] = useState({
+    name: "",
+    email: "",
+    phone: "",
+  });
+  const [editingContact, setEditingContact] = useState(null);
 
   useEffect(() => {
-
     const fetchUser = async () => {
       try {
         const token = localStorage.getItem("accessToken");
         if (!token) {
-          navigate('/Login');
+          navigate("/Login");
           return;
         }
 
-        const response = await fetch("https://my-contacts-server-beryl.vercel.app/api/users/current", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "https://my-contacts-server-beryl.vercel.app/api/users/current",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (response.ok) {
           const userData = await response.json();
-        
-          // Log user data
-          console.log(userData);  
-        
-          // Set user state
-          setUser(userData); 
+          setUser(userData);
         } else {
-          navigate('/Login'); 
+          navigate("/Login");
         }
-        
-        
       } catch (error) {
         console.error(error);
-        navigate('/Login');
+        navigate("/Login");
       }
     };
 
@@ -47,25 +47,28 @@ const HomePage = () => {
       try {
         const token = localStorage.getItem("accessToken");
         if (!token) {
-          navigate('/Login');
+          navigate("/Login");
           return;
         }
 
-        const response = await fetch("https://my-contacts-server-beryl.vercel.app/api/contacts", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "https://my-contacts-server-beryl.vercel.app/api/contacts",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (response.ok) {
           const contactsData = await response.json();
           setContacts(contactsData);
         } else {
-          navigate('/Login');
+          navigate("/Login");
         }
       } catch (error) {
         console.error(error);
-        navigate('/Login');
+        navigate("/Login");
       }
     };
 
@@ -73,28 +76,218 @@ const HomePage = () => {
     fetchContacts();
   }, [navigate]);
 
-  function handleLogout() {
+  const handleLogout = () => {
     localStorage.removeItem("accessToken");
-    navigate('/Login');
-  }
+    navigate("/Login");
+  };
+
+  const handleAddContact = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        navigate("/Login");
+        return;
+      }
+
+      const response = await fetch(
+        "https://my-contacts-server-beryl.vercel.app/api/contacts",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(newContact),
+        }
+      );
+
+      if (response.ok) {
+        const addedContact = await response.json();
+        setContacts([...contacts, addedContact]);
+        setNewContact({ name: "", email: "", phone: "" });
+      } else {
+        navigate("/Login");
+      }
+    } catch (error) {
+      console.error(error);
+      navigate("/Login");
+    }
+  };
+
+  const handleEditContact = (contactId) => {
+    setEditingContact(contactId);
+  };
+
+  const handleUpdateContact = async (contactId, updatedContact) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        navigate("/Login");
+        return;
+      }
+
+      const response = await fetch(
+        `https://my-contacts-server-beryl.vercel.app/api/contacts/${contactId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(updatedContact),
+        }
+      );
+
+      if (response.ok) {
+        const updatedContactData = await response.json();
+        setContacts((prevContacts) =>
+          prevContacts.map((contact) =>
+            contact.id === contactId ? updatedContactData : contact
+          )
+        );
+        setEditingContact(null);
+      } else {
+        
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleDeleteContact = async (contactId) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        navigate("/Login");
+        return;
+      }
+
+      const response = await fetch(
+        `https://my-contacts-server-beryl.vercel.app/api/contacts/${contactId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        setContacts(contacts.filter((contact) => contact.id !== contactId));
+      } else {
+        navigate("/Login");
+      }
+    } catch (error) {
+      console.error(error);
+      navigate("/Login");
+    }
+  };
 
   return (
     <div>
       <button onClick={handleLogout}>Logout</button>
 
-      {user && (
-        <h1>Welcome {user.username}!</h1>
-      )}
+      {user && <h1>Welcome {user.username}!</h1>}
 
       <div>
-        {contacts.map(contact => (
+        <h2>Add Contact</h2>
+        <input
+          type="text"
+          placeholder="Name"
+          value={newContact.name}
+          onChange={(e) =>
+            setNewContact({ ...newContact, name: e.target.value })
+          }
+        />
+        <input
+          type="email"
+          placeholder="Email"
+          value={newContact.email}
+          onChange={(e) =>
+            setNewContact({ ...newContact, email: e.target.value })
+          }
+        />
+        <input
+          type="tel"
+          placeholder="Phone"
+          value={newContact.phone}
+          onChange={(e) =>
+            setNewContact({ ...newContact, phone: e.target.value })
+          }
+        />
+        <button onClick={handleAddContact}>Add</button>
+      </div>
+
+      <div>
+        {contacts.map((contact) => (
           <div key={contact.id}>
-            <p>{contact.name}</p>
-            <p>{contact.email}</p>
-            <p>{contact.phone}</p>
-            <button>Edit</button>
-            <button>Delete</button>
-            </div>
+            {editingContact === contact.id ? (
+              <div>
+                <input
+                  type="text"
+                  placeholder="Name"
+                  value={contact.name}
+                  onChange={(e) =>
+                    setContacts((prevContacts) =>
+                      prevContacts.map((c) =>
+                        c.id === contact.id
+                          ? { ...c, name: e.target.value }
+                          : c
+                      )
+                    )
+                  }
+                />
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={contact.email}
+                  onChange={(e) =>
+                    setContacts((prevContacts) =>
+                      prevContacts.map((c) =>
+                        c.id === contact.id
+                          ? { ...c, email: e.target.value }
+                          : c
+                      )
+                    )
+                  }
+                />
+                <input
+                  type="tel"
+                  placeholder="Phone"
+                  value={contact.phone}
+                  onChange={(e) =>
+                    setContacts((prevContacts) =>
+                      prevContacts.map((c) =>
+                        c.id === contact.id
+                          ? { ...c, phone: e.target.value }
+                          : c
+                      )
+                    )
+                  }
+                />
+                <button
+                  onClick={() =>
+                    handleUpdateContact(contact.id, {
+                      name: contact.name,
+                      email: contact.email,
+                      phone: contact.phone,
+                    })
+                  }
+                >
+                  Save
+                </button>
+                <button onClick={() => setEditingContact(null)}>Cancel</button>
+              </div>
+            ) : (
+              <div>
+                <p>{contact.name}</p>
+                <p>{contact.email}</p>
+                <p>{contact.phone}</p>
+                <button onClick={() => handleEditContact(contact.id)}>Edit</button>
+                <button onClick={() => handleDeleteContact(contact.id)}>Delete</button>
+              </div>
+            )}
+          </div>
         ))}
       </div>
     </div>
