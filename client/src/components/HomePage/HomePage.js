@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import "./homepage.css";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ const HomePage = () => {
     phone: "",
   });
   const [editingContact, setEditingContact] = useState(null);
+  const [showAddContact, setShowAddContact] = useState(false); // State for showing the "Add Contact" section
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -101,16 +103,17 @@ const HomePage = () => {
         }
       );
 
+      if (!newContact.name || !newContact.email || !newContact.phone) {
+        alert("All feilds are mandatory!");
+      }
+
       if (response.ok) {
         const addedContact = await response.json();
         setContacts([...contacts, addedContact]);
         setNewContact({ name: "", email: "", phone: "" });
-      } else {
-        navigate("/Login");
       }
     } catch (error) {
       console.error(error);
-      navigate("/Login");
     }
   };
 
@@ -147,7 +150,7 @@ const HomePage = () => {
         );
         setEditingContact(null);
       } else {
-        
+        alert("All feilds are mandatory!");
       }
     } catch (error) {
       console.error(error);
@@ -184,38 +187,53 @@ const HomePage = () => {
   };
 
   return (
+    <div className="container-home login-title">
     <div>
       <button onClick={handleLogout}>Logout</button>
 
       {user && <h1>Welcome {user.username}!</h1>}
 
-      <div>
+      <div className="add-contact">
         <h2>Add Contact</h2>
-        <input
-          type="text"
-          placeholder="Name"
-          value={newContact.name}
-          onChange={(e) =>
-            setNewContact({ ...newContact, name: e.target.value })
-          }
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={newContact.email}
-          onChange={(e) =>
-            setNewContact({ ...newContact, email: e.target.value })
-          }
-        />
-        <input
-          type="tel"
-          placeholder="Phone"
-          value={newContact.phone}
-          onChange={(e) =>
-            setNewContact({ ...newContact, phone: e.target.value })
-          }
-        />
-        <button onClick={handleAddContact}>Add</button>
+        
+        {showAddContact && (
+          <div className="add-contact-form">
+            <input
+              type="text"
+              placeholder="Name"
+              value={newContact.name}
+              onChange={(e) =>
+                setNewContact({ ...newContact, name: e.target.value })
+              }
+              required
+            />
+            <input
+              type="email"
+              placeholder="Email"
+              value={newContact.email}
+              onChange={(e) =>
+                setNewContact({ ...newContact, email: e.target.value })
+              }
+              required
+            />
+            <input
+              type="tel"
+              placeholder="Phone"
+              value={newContact.phone}
+              onChange={(e) =>
+                setNewContact({ ...newContact, phone: e.target.value })
+              }
+              required
+            />
+            <button onClick={handleAddContact}>Add Contact</button>
+          </div>
+        )}
+        <button
+          onClick={() => setShowAddContact(!showAddContact)}
+          className="add-contact-button"
+        >
+          {showAddContact ? "Cancel" : "Add Contact"}
+        </button>
       </div>
 
       <div>
@@ -230,9 +248,7 @@ const HomePage = () => {
                   onChange={(e) =>
                     setContacts((prevContacts) =>
                       prevContacts.map((c) =>
-                        c.id === contact.id
-                          ? { ...c, name: e.target.value }
-                          : c
+                        c.id === contact.id ? { ...c, name: e.target.value } : c
                       )
                     )
                   }
@@ -283,13 +299,18 @@ const HomePage = () => {
                 <p>{contact.name}</p>
                 <p>{contact.email}</p>
                 <p>{contact.phone}</p>
-                <button onClick={() => handleEditContact(contact.id)}>Edit</button>
-                <button onClick={() => handleDeleteContact(contact.id)}>Delete</button>
+                <button onClick={() => handleEditContact(contact.id)}>
+                  Edit
+                </button>
+                <button onClick={() => handleDeleteContact(contact.id)}>
+                  Delete
+                </button>
               </div>
             )}
           </div>
         ))}
       </div>
+    </div>
     </div>
   );
 };
