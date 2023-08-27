@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; // Import Link component
-import './login.css';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Login = () => {
+  const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,14 +22,10 @@ const Login = () => {
       if(response.ok) {
         const data = await response.json();
 
-        // Get access token from response
         const accessToken = data.accessToken; 
-        console.log(accessToken);
-
-        // Store token in localStorage
         localStorage.setItem("accessToken", accessToken);
 
-        // Redirect to homepage
+        navigate('/home');
       } else {
         console.log("Login failed");
       }
@@ -62,7 +58,6 @@ const Login = () => {
           Login
         </button>
 
-        {/* Link to the registration page */}
         <p>
           Don't have an account? <Link to="/">Register</Link>
         </p>
