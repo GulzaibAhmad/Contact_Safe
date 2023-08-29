@@ -170,23 +170,23 @@ const HomePage = () => {
   return (
     <div className="home-container">
       <div className="home-content">
-      <div className="header">
-        {user ? (
-          <h1 className="welcome-heading">Welcome {user.username}!</h1>
-        ) : null}
-        <div className="buttons">
-          <Link to="/add-contact" className="button">
-            Add Contact
-          </Link>
-          <button onClick={handleLogout} className="logout-button">
-            Logout
-          </button>
+        <div className="header">
+          {user ? (
+            <h1 className="welcome-heading">Welcome {user.username}!</h1>
+          ) : null}
+          <div className="buttons">
+            <Link to="/add-contact" className="button">
+              Add Contact
+            </Link>
+            <button onClick={handleLogout} className="logout-button">
+              Logout
+            </button>
+          </div>
         </div>
-      </div>
 
-      <div className="contacts-container">
-        {contacts.map((contact) => (
-          <div key={contact.id} className="contact-card">
+        <div className="contacts-container">
+          {contacts.map((contact) => (
+            <div key={contact.id} className="contact-card">
             {contact.isEditing ? (
               <div className="edit-form">
                 <input
