@@ -1,9 +1,11 @@
-
-.container {
+._registration_container{
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  min-height: 98vh;
+}
+
+._container {
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -11,22 +13,21 @@
   width: 300px;
 }
 
-.header {
+._header {
   text-align: center;
 }
 
-.header h1 {
+._header h1 {
   font-size: 2rem;
   color: black;
-  margin-bottom: 0.1px;
 }
 
-.header h3 {
+._header h3 {
   font-size: 1.5rem;
   color: black;
 }
 
-.login-title input {
+._login-title input {
   width: 95%;
   padding: 10px;
   margin-bottom: 10px;
@@ -34,7 +35,7 @@
   border-radius: 5px;
 }
 
-.login-title button {
+._login-title button {
   width: 100%;
   background-color: #007bff;
   color: #fff;
@@ -43,22 +44,23 @@
   padding: 10px;
   cursor: pointer;
   transition: background-color 0.3s;
+  margin-bottom: 1px;
 }
 
-.login-title button:hover {
+._login-title button:hover {
   background-color: #0056b3;
 }
 
-.login-title p {
+._login-title p {
   margin-top: 10px;
   text-align: center;
 }
 
-.login-title a {
+._login-title a {
   color: #007bff;
   text-decoration: none;
 }
 
-.login-title a:hover {
+._login-title a:hover {
   text-decoration: underline;
 }

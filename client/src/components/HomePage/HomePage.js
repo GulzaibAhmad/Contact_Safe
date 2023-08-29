@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "./homepage.css";
 
 const HomePage = () => {
@@ -7,16 +7,9 @@ const HomePage = () => {
 
   const [user, setUser] = useState(null);
   const [contacts, setContacts] = useState([]);
-  const [newContact, setNewContact] = useState({
-    name: "",
-    email: "",
-    phone: "",
-  });
-  const [editingContact, setEditingContact] = useState(null);
-  const [showAddContact, setShowAddContact] = useState(false); // State for showing the "Add Contact" section
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchUserData = async () => {
       try {
         const token = localStorage.getItem("accessToken");
         if (!token) {
@@ -45,7 +38,7 @@ const HomePage = () => {
       }
     };
 
-    const fetchContacts = async () => {
+    const fetchContactsData = async () => {
       try {
         const token = localStorage.getItem("accessToken");
         if (!token) {
@@ -74,8 +67,8 @@ const HomePage = () => {
       }
     };
 
-    fetchUser();
-    fetchContacts();
+    fetchUserData();
+    fetchContactsData();
   }, [navigate]);
 
   const handleLogout = () => {
@@ -83,78 +76,66 @@ const HomePage = () => {
     navigate("/Login");
   };
 
-  const handleAddContact = async () => {
-    try {
-      const token = localStorage.getItem("accessToken");
-      if (!token) {
-        navigate("/Login");
-        return;
-      }
-
-      const response = await fetch(
-        "https://my-contacts-server-beryl.vercel.app/api/contacts",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(newContact),
-        }
-      );
-
-      if (!newContact.name || !newContact.email || !newContact.phone) {
-        alert("All feilds are mandatory!");
-      }
-
-      if (response.ok) {
-        const addedContact = await response.json();
-        setContacts([...contacts, addedContact]);
-        setNewContact({ name: "", email: "", phone: "" });
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const handleEditContact = (contactId) => {
-    setEditingContact(contactId);
+    setContacts((prevContacts) =>
+      prevContacts.map((contact) =>
+        contact.id === contactId ? { ...contact, isEditing: true } : contact
+      )
+    );
   };
 
-  const handleUpdateContact = async (contactId, updatedContact) => {
-    try {
-      const token = localStorage.getItem("accessToken");
-      if (!token) {
-        navigate("/Login");
-        return;
+  const handleCancelEdit = (contactId) => {
+    setContacts((prevContacts) =>
+      prevContacts.map((contact) =>
+        contact.id === contactId ? { ...contact, isEditing: false } : contact
+      )
+    );
+  };
+
+  const handleSaveEdit = (contactId, updatedContact) => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      navigate("/Login");
+      return;
+    }
+
+    fetch(
+      `https://my-contacts-server-beryl.vercel.app/api/contacts/${contactId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatedContact),
       }
-
-      const response = await fetch(
-        `https://my-contacts-server-beryl.vercel.app/api/contacts/${contactId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(updatedContact),
+    )
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
         }
-      );
-
-      if (response.ok) {
-        const updatedContactData = await response.json();
+        throw new Error("Failed to update contact");
+      })
+      .then((updatedContactData) => {
         setContacts((prevContacts) =>
           prevContacts.map((contact) =>
-            contact.id === contactId ? updatedContactData : contact
+            contact.id === contactId
+              ? { ...updatedContactData, isEditing: false }
+              : contact
           )
         );
-        setEditingContact(null);
-      } else {
-        alert("All feilds are mandatory!");
-      }
-    } catch (error) {
-      console.error(error);
-    }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const handleEditChange = (contactId, field, value) => {
+    setContacts((prevContacts) =>
+      prevContacts.map((contact) =>
+        contact.id === contactId ? { ...contact, [field]: value } : contact
+      )
+    );
   };
 
   const handleDeleteContact = async (contactId) => {
@@ -187,118 +168,66 @@ const HomePage = () => {
   };
 
   return (
-    <div className="container-home login-title">
-    <div>
-      <button onClick={handleLogout}>Logout</button>
-
-      {user && <h1>Welcome {user.username}!</h1>}
-
-      <div className="add-contact">
-        <h2>Add Contact</h2>
-        
-        {showAddContact && (
-          <div className="add-contact-form">
-            <input
-              type="text"
-              placeholder="Name"
-              value={newContact.name}
-              onChange={(e) =>
-                setNewContact({ ...newContact, name: e.target.value })
-              }
-              required
-            />
-            <input
-              type="email"
-              placeholder="Email"
-              value={newContact.email}
-              onChange={(e) =>
-                setNewContact({ ...newContact, email: e.target.value })
-              }
-              required
-            />
-            <input
-              type="tel"
-              placeholder="Phone"
-              value={newContact.phone}
-              onChange={(e) =>
-                setNewContact({ ...newContact, phone: e.target.value })
-              }
-              required
-            />
-            <button onClick={handleAddContact}>Add Contact</button>
-          </div>
-        )}
-        <button
-          onClick={() => setShowAddContact(!showAddContact)}
-          className="add-contact-button"
-        >
-          {showAddContact ? "Cancel" : "Add Contact"}
-        </button>
+    <div className="home-container">
+      <div className="home-content">
+      <div className="header">
+        {user ? (
+          <h1 className="welcome-heading">Welcome {user.username}!</h1>
+        ) : null}
+        <div className="buttons">
+          <Link to="/add-contact" className="button">
+            Add Contact
+          </Link>
+          <button onClick={handleLogout} className="logout-button">
+            Logout
+          </button>
+        </div>
       </div>
 
-      <div>
+      <div className="contacts-container">
         {contacts.map((contact) => (
-          <div key={contact.id}>
-            {editingContact === contact.id ? (
-              <div>
+          <div key={contact.id} className="contact-card">
+            {contact.isEditing ? (
+              <div className="edit-form">
                 <input
                   type="text"
-                  placeholder="Name"
                   value={contact.name}
                   onChange={(e) =>
-                    setContacts((prevContacts) =>
-                      prevContacts.map((c) =>
-                        c.id === contact.id ? { ...c, name: e.target.value } : c
-                      )
-                    )
+                    handleEditChange(contact.id, "name", e.target.value)
                   }
                 />
                 <input
                   type="email"
-                  placeholder="Email"
                   value={contact.email}
                   onChange={(e) =>
-                    setContacts((prevContacts) =>
-                      prevContacts.map((c) =>
-                        c.id === contact.id
-                          ? { ...c, email: e.target.value }
-                          : c
-                      )
-                    )
+                    handleEditChange(contact.id, "email", e.target.value)
                   }
                 />
                 <input
                   type="tel"
-                  placeholder="Phone"
                   value={contact.phone}
                   onChange={(e) =>
-                    setContacts((prevContacts) =>
-                      prevContacts.map((c) =>
-                        c.id === contact.id
-                          ? { ...c, phone: e.target.value }
-                          : c
-                      )
-                    )
+                    handleEditChange(contact.id, "phone", e.target.value)
                   }
                 />
-                <button
-                  onClick={() =>
-                    handleUpdateContact(contact.id, {
-                      name: contact.name,
-                      email: contact.email,
-                      phone: contact.phone,
-                    })
-                  }
-                >
+                <button onClick={() => handleSaveEdit(contact.id, contact)}>
                   Save
                 </button>
-                <button onClick={() => setEditingContact(null)}>Cancel</button>
+                <button onClick={() => handleCancelEdit(contact.id)}>
+                  Cancel
+                </button>
               </div>
             ) : (
-              <div>
-                <p>{contact.name}</p>
-                <p>{contact.email}</p>
-                <p>{contact.phone}</p>
+              <div className="paragraph">
+                <p>
+                  <strong>Name:</strong> {contact.name}
+                </p>
+                <p>
+                  <strong>Email:</strong> {contact.email}
+                </p>
+                <p>
+                  <strong>Phone:</strong> {contact.phone}
+                </p>
                 <button onClick={() => handleEditContact(contact.id)}>
                   Edit
                 </button>

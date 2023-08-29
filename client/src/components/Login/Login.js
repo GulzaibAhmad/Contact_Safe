@@ -7,9 +7,15 @@ const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!email || !password) {
+      alert("All fields must be filled!");
+      return;
+    }
 
     try {
       const response = await fetch(
@@ -31,45 +37,62 @@ const Login = () => {
 
         navigate("/home");
       } else {
-        console.log("Login failed");
+        alert("Wrong Password or Email!");
       }
     } catch (error) {
       console.log(error);
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
-    <div className="container">
-      <div className="header">
-        <h1>Welcome to</h1>
-        <h3>Contact Safe</h3>
-      </div>
-      <div className="login-title">
-        <form className="login-form" onSubmit={handleSubmit}>
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="login-input"
-          />
-
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="login-input"
-          />
-
-          <button type="submit" className="login-button">
-            Login
-          </button>
-
-          <p>
-            Don't have an account? <Link to="/">Register</Link>
-          </p>
-        </form>
+    <div className="_login-container">
+      <div className="_container">
+        <div className="_header">
+          <h1>Welcome to</h1>
+          <h3>Contact Safe</h3>
+        </div>
+        <div className="_login-title">
+          <form className="_login-form" onSubmit={handleSubmit}>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="_login-input"
+            />
+            <div style={{ position: "relative" }}>
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="_login-input"
+              />
+              <span
+                style={{
+                  position: "absolute",
+                  top: "40%",
+                  right: "10px",
+                  transform: "translateY(-50%)",
+                  cursor: "pointer",
+                }}
+                onClick={togglePasswordVisibility}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </span>
+            </div>
+            <button type="submit" className="_login-button">
+              Login
+            </button>
+            <p>
+              Don't have an account? <Link to="/">Register</Link>
+            </p>
+          </form>
+        </div>
       </div>
     </div>
   );

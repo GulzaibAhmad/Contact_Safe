@@ -71,13 +71,13 @@ const RegistrationForm = () => {
   };
 
   return (
-    <div className="registration_container">
-    <div className="container">
-      <div className="header">
+    <div className="_registration_container">
+    <div className="_container">
+      <div className="_header">
         <h1>Welcome to</h1>
         <h3>Contact Safe</h3>
       </div>
-      <div  className="login-title">
+      <div  className="_login-title">
         <form onSubmit={handleRegistration}>
           <input
             value={username}

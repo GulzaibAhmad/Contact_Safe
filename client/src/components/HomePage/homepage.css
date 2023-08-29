@@ -1,66 +1,131 @@
-.container-home {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    width: 95vw;
-    min-height: 90vh
-  }
-  
-  .header {
-    text-align: center;
-  }
-  
-  .header h1 {
-    font-size: 2rem;
-    color: black;
-    margin-bottom: 0.1px;
-  }
-  
-  .header h3 {
-    font-size: 1.5rem;
-    color: black;
-  }
-  
-  .login-title input {
-    width: 95%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .login-title button {
-    width: 100%;
-    background-color: #007bff;
-    margin-bottom: 2px;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    padding: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .login-title button:hover {
-    background-color: #0056b3;
-  }
-  
-  .login-title p {
-    margin-top: 10px;
-    text-align: center;
-  }
-  
-  .login-title a {
-    color: #007bff;
-    text-decoration: none;
-  }
-  
-  .login-title a:hover {
-    text-decoration: underline;
-  }
-  
+body {
+  background-color: dodgerblue;
+}
+
+.home-content {
+  padding: 10px;
+  min-height: 95vh;
+  border-radius: 10px;
+  background-color: white;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.buttons {
+  display: flex;
+}
+
+.logout-button {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.welcome-heading {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.button {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+.contacts-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.contact-card {
+  border: 1px solid #ccc;
+  padding: 16px;
+  border-radius: 8px;
+  background-color: #f7f7f7;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  width: 250px;
+}
+
+.paragraph,
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: center;
+}
+
+.contact-card p {
+  margin: 8px 0;
+}
+
+.contact-card button {
+  display: inline-block;
+  margin-right: 5px;
+  margin-top: 8px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 6px 12px;
+}
+
+.contact-card input {
+  width: 90%;
+  padding: 7.5px;
+  margin: 1px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.contact-card .button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  margin-right: 10px;
+  padding: 6px 12px;
+}
+
+.contact-card .button:hover {
+  background-color: #0056b3;
+}
+
