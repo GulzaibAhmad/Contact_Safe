@@ -13,6 +13,12 @@ const AddContact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Validate phone number format
+    if (newContact.phone.match(/[0-9]{4}-[0-9]{5}-[0-9]{2}/)) {
+      alert("Phone number should not contain dashes. Please remove dashes and try again.");
+      return;
+    }
+
     try {
       const token = localStorage.getItem("accessToken");
       if (!token) {
