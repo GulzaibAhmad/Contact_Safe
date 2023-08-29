@@ -13,11 +13,8 @@ const AddContact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate phone number format
-    if (newContact.phone.match(/[0-9]{4}-[0-9]{5}-[0-9]{2}/)) {
-      alert("Phone number should not contain dashes. Please remove dashes and try again.");
-      return;
-    }
+    // Remove dashes from the phone number
+    const cleanedPhone = newContact.phone.replace(/-/g, "");
 
     try {
       const token = localStorage.getItem("accessToken");
@@ -34,11 +31,11 @@ const AddContact = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(newContact),
+          body: JSON.stringify({ ...newContact, phone: cleanedPhone }),
         }
       );
 
-      if (!newContact.name || !newContact.email || !newContact.phone) {
+      if (!newContact.name || !newContact.email || !cleanedPhone) {
         alert("All fields are mandatory!");
         return;
       }
